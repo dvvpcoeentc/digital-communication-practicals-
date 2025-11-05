@@ -1,0 +1,25 @@
+clc; 
+clear all;
+k=input('Enter the length of the message word:'); 
+n=input('Enter the length of the Code word:'); 
+P=input('Enter the Sub Matrix:');
+G=[eye(k) P]
+m=input('Enter the msg word:'); 
+C1=rem(m*P,2);
+% msg * Submatrix 
+X=[m C1]	       % Codevector
+X(3)=~X(3)	      %placing error in 3rd bit
+H=[P' eye(n-k)]
+Y=X                 	% Y is the received vector after error occurred
+Ht=H'
+S=rem(Y*Ht,2) 
+for i=1:1:size(Ht,1)
+if (Ht(i,1:3)==S)
+Y(i)=1-Y(i);
+break 
+end
+end
+disp('The error is in bit') 
+disp(i)
+disp('The corrected code word is') 
+disp(Y)
