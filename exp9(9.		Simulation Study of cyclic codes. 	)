@@ -1,0 +1,24 @@
+
+clc;
+clear all;
+n = 7; % Codeword length
+k = 4; % Message length
+data = [1 0 1 1];
+P = [1 1 0 1];
+parmat = cyclgen(n,P);
+T = syndtable(parmat);
+encData = encode(data,n,k,'cyclic/binary',P);
+disp(['Transmitted codeword: ', ...
+    num2str(encData)]);
+encData(3) = ~encData(3); % Error in 3rd bit
+disp(['Received codeword: ', ...
+    num2str(encData)]);
+syndrome = mod(encData*parmat', 2);
+disp(['Syndrome: ', ...
+    num2str(syndrome)]);
+errorPattern = T(bi2de(syndrome, 'left-msb') + 1, :);
+disp(['Error pattern: ', ...
+    num2str(errorPattern)]);
+corData = mod(encData + errorPattern, 2);
+disp(['Corrected codeword: ', ...
+    num2str(corData)]);
