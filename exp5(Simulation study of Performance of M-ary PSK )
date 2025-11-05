@@ -1,0 +1,43 @@
+clc;
+clear;
+close all;
+
+% Parameters
+M = 32;  % Order of PSK (M-PSK)
+N = 1000;  % Number of symbols
+SNR = 10;  % Signal-to-Noise Ratio in dB
+
+% Generate random data symbols
+dataSymbols = randi([0 M-1], N, 1);
+
+% Modulate using M-PSK
+txSignal = pskmod(dataSymbols, M);
+
+% Add AWGN noise
+rxSignal = awgn(txSignal, SNR, 'measured');
+
+% Demodulate
+demodulatedSymbols = pskdemod(rxSignal, M);
+
+% Calculate symbol error rate
+symbolErrors = sum(dataSymbols ~= demodulatedSymbols);
+SER = symbolErrors / N;
+
+% Display results
+disp(['Symbol Error Rate (SER): ', num2str(SER)]);
+
+% Plot constellation diagrams
+figure;
+subplot(2, 1, 1);
+plot(real(txSignal), imag(txSignal), 'o');
+grid on;
+title('Transmitted Signal Constellation');
+xlabel('In-Phase');
+ylabel('Quadrature');
+
+subplot(2, 1, 2);
+plot(real(rxSignal), imag(rxSignal), 'o');
+grid on;
+title('Received Signal Constellation');
+xlabel('In-Phase');
+ylabel('Quadrature');
